@@ -4,7 +4,7 @@ import fastapi
 from sqlmodel import select, Session
 
 from backend import scraping, settings
-from backend.api.dependecies import db_session, search_model
+from backend.api.dependencies import db_session, search_model
 from backend.api.models import Search, Song, SongSearch
 
 router = fastapi.APIRouter()
