@@ -9,7 +9,8 @@ from backend.api.models import Search
 db_session: Session = Depends(settings.get_db_session)
 
 
-def _get_search_model(query: str, page: int, session: Session = db_session):
+def _get_search_model(query: str, session: Session = db_session):
+    page = 1
     search = session.get(Search, (query, page))
     if search is None:
         return Search(
