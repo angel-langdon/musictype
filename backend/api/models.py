@@ -27,15 +27,17 @@ id_field: UUID4 = Field(
 class Song(SQLModel, table=True):  # type: ignore
     id: UUID4 = id_field
 
-    slug: str = Field(index=True, sa_column_kwargs={"unique": True})
     title: str = Field(index=True)
-    original_lyrics: Optional[str]
     author: str = Field(index=True)
-    lyrics: Optional[str]
+    original_lyrics: Optional[str] = None
+    lyrics: Optional[str] = None
+
+    g_slug: str = Field(index=True, sa_column_kwargs={"unique": True})
+    g_views: int = Field(index=True)
 
 
 class SongSearch(SQLModel):
-    slug: str
+    id: UUID4
     title: str
     author: str
 
