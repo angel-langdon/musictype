@@ -5,9 +5,8 @@ import unicodedata
 import httpx
 from bs4 import BeautifulSoup
 
-from backend.api.models import SongSearch
+from backend.api.models import Song
 
-url = "https://genius.com/Cano-el-olor-del-dinero-lyrics"
 client: httpx.AsyncClient = httpx.AsyncClient()
 
 re_lyrics_container = re.compile("^Lyrics__Container")
@@ -27,19 +26,22 @@ async def get_song_lyrics(url: str) -> str:
     return "\n\n".join(text_lines)
 
 
-async def search_songs(query: str, page: int = 1) -> list[SongSearch]:
+async def search_songs(query: str, page: int = 1) -> list[Song]:
+    url = "https://genius.com/api/search/song"
     resp = await client.get(url, params={"q": query, "page": page})
+
     content = unicodedata.normalize("NFKD", resp.content.decode())
     dic = json.loads(content)
-    songs: list[SongSearch] = []
+    songs: list[Song] = []
     for song_dict in dic["response"]["sections"][0]["hits"]:
         hit = song_dict["result"]
         author: str = hit["full_title"].replace(hit["title"], "")
         songs.append(
-            SongSearch(
+            Song(
                 slug=hit["path"],
                 title=hit["full_title"].replace(author, ""),
                 author=author.strip().lstrip("by "),
+                g_views=hit.get("stats", dict()).get("pageviews", 0),
             )
         )
     return songs
