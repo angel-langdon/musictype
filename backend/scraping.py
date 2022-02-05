@@ -38,10 +38,10 @@ async def search_songs(query: str, page: int = 1) -> list[Song]:
         author: str = hit["full_title"].replace(hit["title"], "")
         songs.append(
             Song(
-                slug=hit["path"],
                 title=hit["full_title"].replace(author, ""),
                 author=author.strip().lstrip("by "),
                 g_views=hit.get("stats", dict()).get("pageviews", 0),
+                g_slug=hit["path"],
             )
         )
     return songs
