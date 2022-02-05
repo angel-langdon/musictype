@@ -1,4 +1,3 @@
-import datetime
 import uuid
 from typing import Optional
 
@@ -40,9 +39,3 @@ class SongSearch(SQLModel):
     id: UUID4
     title: str
     author: str
-
-
-class Search(SQLModel):
-    query: str = Field(primary_key=True)
-    page: int = Field(primary_key=True)
-    date: datetime.datetime = Field(default_factory=datetime.datetime.now)
