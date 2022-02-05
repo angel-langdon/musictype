@@ -3,7 +3,7 @@ import fastapi
 from backend import scraping
 from backend.api.models import SongSearch
 
-router = fastapi.APIRouter(prefix="/resources/")
+router = fastapi.APIRouter(prefix="/resources")
 
 
 ROUTE_SEARCH_SONGS = "/songs/search"
