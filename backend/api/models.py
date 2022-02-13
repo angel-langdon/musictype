@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 
-from pydantic import UUID4
+from pydantic import BaseModel, UUID4
 from sqlmodel import Field, SQLModel
 
 
@@ -28,14 +28,13 @@ class Song(SQLModel, table=True):  # type: ignore
 
     title: str = Field(index=True)
     author: str = Field(index=True)
-    original_lyrics: Optional[str] = None
     lyrics: Optional[str] = None
 
     g_slug: str = Field(index=True, sa_column_kwargs={"unique": True})
     g_views: int = Field(index=True)
 
 
-class SongSearch(SQLModel):
+class SongSearch(BaseModel):
     id: UUID4
     title: str
     author: str
