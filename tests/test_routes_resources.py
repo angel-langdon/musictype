@@ -1,8 +1,8 @@
 import pytest
+from fastapi import status
 from fastapi.testclient import TestClient
 
-from backend.api.models import SongSearch
-from backend.api.routes.resources import ROUTE_SEARCH_SONGS
+from backend.api.models import new_uuid, SongSearch
 
 _MOUNT = "/api/resources/"
 
@@ -13,9 +13,34 @@ def client(base_client: TestClient):
     return base_client
 
 
+def _get_songs(client: TestClient, query: str = "hola") -> list[SongSearch]:
+    resp = client.get(
+        "songs/search",
+        params={"query": query},
+    )
+    assert resp.status_code == status.HTTP_200_OK
+    for song in resp.json():
+        assert len(set(song) - set(SongSearch.__fields__)) == 0
+    return [SongSearch(**song) for song in resp.json()]
+
+
 def test_search_songs(client: TestClient):
-    resp = client.get(ROUTE_SEARCH_SONGS[1:], params={"query": "hola"})
-    assert resp.status_code == 200
-    songs = [SongSearch(**song) for song in resp.json()]
-    for song in songs:
-        assert len(set(song.__fields__) - set(SongSearch.__fields__)) == 0
+    assert _get_songs(client)
+    assert not _get_songs(client, query="kajdlajlsdjadjalkdjaldjlkdjaldjalsd")
+
+
+def test_song_lyrics(client: TestClient):
+    url_lyrics = "song/lyrics/"
+    # not saved lyrics
+    song = _get_songs(client)[0]
+    resp = client.get(url_lyrics + str(song.id))
+    assert resp.status_code == status.HTTP_200_OK
+    assert len(resp.content) > 10
+    # saved lyrics
+    resp = client.get(url_lyrics + str(song.id))
+    assert resp.status_code == status.HTTP_200_OK
+    assert len(resp.content) > 10
+
+    # not found song
+    resp = client.get(url_lyrics + str(new_uuid()))
+    assert resp.status_code == status.HTTP_404_NOT_FOUND
