@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.routes import base_router
-from backend.settings import APP_ENV
+from backend.settings import APP_ENV, init_db
 
 
 class HealthCheckFilter(logging.Filter):  # pragma: no cover
@@ -34,8 +34,13 @@ def create_app() -> FastAPI:
             allow_methods=["*"],
             allow_headers=["*"],
         )
+    if APP_ENV == "prod":  # pragma: no cover
+        logging.getLogger("uvicorn.access").addFilter(HealthCheckFilter())
 
-    logging.getLogger("uvicorn.access").addFilter(HealthCheckFilter())
+    @app.on_event("startup")
+    def _on_startup():
+        init_db()
+
     return app
 
 
