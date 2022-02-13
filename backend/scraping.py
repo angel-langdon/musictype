@@ -24,6 +24,10 @@ def get_song_lyrics(url: str) -> str:
     return "\n\n".join(text_lines)
 
 
+def get_song_lyrics_from_slug(slug: str) -> str:
+    return get_song_lyrics(f"https://genius.com{slug}")
+
+
 def search_songs(query: str, page: int = 1) -> list[Song]:
     url = "https://genius.com/api/search/song"
     resp = httpx.get(url, params={"q": query, "page": page})
