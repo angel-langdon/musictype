@@ -24,7 +24,6 @@ addopts = "-vv --cov backend --cov-report term --cov-report html"
 log_cli = true
 env = [
 	"APP_ENV=dev",
-	"APP_SECRET=testFakeSecret",
 	"DB_URI=sqlite:///tests/fixtures/tests_database.db",
 ]
 
