@@ -7,13 +7,11 @@ from bs4 import BeautifulSoup
 
 from backend.api.models import Song
 
-client: httpx.AsyncClient = httpx.AsyncClient()
-
 re_lyrics_container = re.compile("^Lyrics__Container")
 
 
-async def get_song_lyrics(url: str) -> str:
-    resp = await client.get(url)
+def get_song_lyrics(url: str) -> str:
+    resp = httpx.get(url)
     soup = BeautifulSoup(resp.content, "lxml")
 
     for br in soup.find_all("br"):
@@ -26,9 +24,9 @@ async def get_song_lyrics(url: str) -> str:
     return "\n\n".join(text_lines)
 
 
-async def search_songs(query: str, page: int = 1) -> list[Song]:
+def search_songs(query: str, page: int = 1) -> list[Song]:
     url = "https://genius.com/api/search/song"
-    resp = await client.get(url, params={"q": query, "page": page})
+    resp = httpx.get(url, params={"q": query, "page": page})
 
     content = unicodedata.normalize("NFKD", resp.content.decode())
     dic = json.loads(content)
