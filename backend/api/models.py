@@ -12,7 +12,7 @@ def new_uuid() -> uuid.UUID:
     # https://github.com/tiangolo/sqlmodel/issues/25
     # by making sure uuid str does not start with a leading 0
     while (value := uuid.uuid4()).hex[0] == "0":
-        pass
+        pass  # pragma: no cover
     return value
 
 
