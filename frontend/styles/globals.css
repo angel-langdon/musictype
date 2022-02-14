@@ -11,9 +11,32 @@
 
 html,
 body {
+  height: 100%;
   padding: 0;
   margin: 0;
   font-family: "Roboto Mono", monospace;
   background-color: var(--bg-color);
   color: var(--text-color);
+}
+
+#__next {
+  height: 100%;
+}
+
+div.input {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+div.input > input {
+  background-color: rgba(0, 0, 0, 0);
+  outline: none;
+}
+
+.pretty-rectangle {
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px 0 rgba(2, 3, 17, 0.62);
+  box-sizing: content-box;
 }
