@@ -2,7 +2,7 @@ import { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios";
 const axios = require("axios").default;
 
 type APINamespace = "resources";
-export const baseURL = process.env.REACT_APP_API_URL || "/api";
+export const baseURL = process.env.NEXT_PUBLIC_APP_API_URL || "/api";
 axios.defaults.baseURL = baseURL;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.common["Accept"] = "application/json";
