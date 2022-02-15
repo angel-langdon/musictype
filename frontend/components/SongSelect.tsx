@@ -77,7 +77,6 @@ export default function SongSelect(props: Props) {
 }
 
 function Results(props: { songs: Song[]; isLoading: boolean }) {
-  console.log(props.isLoading, props.songs);
   if (props.isLoading)
     return (
       <div className="flex flex-grow items-center justify-center">
