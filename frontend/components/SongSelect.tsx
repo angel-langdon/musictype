@@ -31,13 +31,15 @@ function useDelayedSearch(
   const [delayedQuery, setDelayedQuery] = useState("");
   useEffect(() => {
     const MILISECONDS_UNTIL_START_SEARCH = 0.5 * 1000;
-    if (query === "") setIsLoading(false);
-    else setIsLoading(true);
+    if (query === "") {
+      setIsLoading(false);
+      setSongs([]);
+    } else setIsLoading(true);
     const delayedSearch = setTimeout(() => {
       setDelayedQuery(query);
     }, MILISECONDS_UNTIL_START_SEARCH);
     return () => clearTimeout(delayedSearch);
-  }, [query, setDelayedQuery]);
+  }, [query, setDelayedQuery, setSongs]);
 
   useEffect(() => {
     if (delayedQuery === "") return;
@@ -59,8 +61,15 @@ export default function SongSelect(props: Props) {
 
   return (
     <div className="flex flex-grow">
-      <div className="flex flex-col w-[50vw] h-[80%] bg-slate-700 pretty-rectangle">
-        <div className="input text-white">
+      <div
+        className="flex flex-col w-[50vw] bg-slate-700 pretty-container relative"
+        style={
+          songs.length > 0 || isLoading
+            ? { maxHeight: "80%" }
+            : { height: "fit-content" }
+        }
+      >
+        <div className="input text-white p-5">
           <BiSearchAlt2 />
           <input
             className="primary"
@@ -84,9 +93,19 @@ function Results(props: { songs: Song[]; isLoading: boolean }) {
       </div>
     );
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-y-scroll flex-grow overflow-x-clip">
       {props.songs.map((song) => (
-        <div key={`${song.author}-${song.title}`}>{song.title}</div>
+        <div
+          key={`${song.author}-${song.title}`}
+          className="flex flex-col hover:bg-slate-800 cursor-pointer px-6 py-4 whitespace-nowrap group"
+        >
+          <div className="block font-bold text-slate-400 text-ellipsis overflow-hidden">
+            {song.title}
+          </div>
+          <div className="block overflow-hidden text-ellipsis">
+            {song.author}
+          </div>
+        </div>
       ))}
     </div>
   );
