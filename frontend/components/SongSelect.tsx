@@ -51,15 +51,16 @@ export default function SongSelect(props: Props) {
   return (
     <div
       className="flex flex-col w-[50vw] bg-slate-700 pretty-container relative transition-all overflow-hidden"
-      style={songs.length > 1 || isLoading ? { height: "75%" } : { height: 64 }}
+      style={songs.length > 0 || isLoading ? { height: "75%" } : { height: 64 }}
     >
       <div className="input text-white p-5">
         <BiSearchAlt2 />
         <input
-          className="primary"
+          className="primary w-full"
           placeholder="Search a song..."
           value={query}
           autoFocus={true}
+          maxLength={90}
           onChange={(e) => setQuery(e.target.value)}
         ></input>
       </div>
