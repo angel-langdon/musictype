@@ -1,4 +1,5 @@
 import fastapi
+from fastapi import Query
 from sqlmodel import Session
 
 from backend import scraping, song_utils
@@ -28,7 +29,10 @@ def _upsert_songs(songs: list[Song], session: Session):
 
 
 @router.get("/songs/search", response_model=list[SongSearch])
-def search_songs(query: str, session: Session = db_session):
+def search_songs(
+    query: str = Query(..., min_length=1, max_length=90),
+    session: Session = db_session,
+):
     """Search songs by query."""
 
     songs = scraping.search_songs(query)

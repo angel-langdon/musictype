@@ -13,11 +13,15 @@ def client(base_client: TestClient):
     return base_client
 
 
-def _get_songs(client: TestClient, query: str = "hola") -> list[SongSearch]:
-    resp = client.get(
+def _get_songs_response(client: TestClient, query: str):
+    return client.get(
         "songs/search",
         params={"query": query},
     )
+
+
+def _get_songs(client: TestClient, query: str = "hola") -> list[SongSearch]:
+    resp = _get_songs_response(client, query)
     assert resp.status_code == status.HTTP_200_OK
     for song in resp.json():
         assert len(set(song) - set(SongSearch.__fields__)) == 0
@@ -27,6 +31,9 @@ def _get_songs(client: TestClient, query: str = "hola") -> list[SongSearch]:
 def test_search_songs(client: TestClient):
     assert _get_songs(client)
     assert not _get_songs(client, query="kajdlajlsdjadjalkdjaldjlkdjaldjalsd")
+    for query in ["", "a" * 91]:
+        resp = _get_songs_response(client, query=query)
+        assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 def test_song_lyrics(client: TestClient):
