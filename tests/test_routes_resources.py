@@ -47,7 +47,9 @@ def test_song_lyrics(client: TestClient):
     resp = client.get(url_lyrics + str(song.id))
     assert resp.status_code == status.HTTP_200_OK
     assert len(resp.content) > 10
-
     # not found song
     resp = client.get(url_lyrics + str(new_uuid()))
     assert resp.status_code == status.HTTP_404_NOT_FOUND
+    # invalid uuid
+    resp = client.get(url_lyrics + "not_valid_uuid_format")
+    assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
