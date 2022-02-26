@@ -1,9 +1,24 @@
-import { useState } from "react";
 import { Song } from "api/models";
-import SongSelect from "./SongSelect";
+import { memo } from "react";
 
-export default function TypingTest() {
-  const [song, setSong] = useState<Song | null>(null);
-  if (!song) return <SongSelect setSong={setSong} />;
-  return <div className="flex w-[80vw] bg-slate-50"></div>;
+interface TypingTestProps {
+  song: Song;
+  letterHeight: number;
 }
+
+const TypingTest = memo(({ song, letterHeight }: TypingTestProps) => {
+  return (
+    <div
+      className="w-[30vw] overflow-scroll"
+      style={{ height: letterHeight * 5 }}
+    >
+      <div className="flex flex-col w-[30vw]">
+        {song.lyrics.split("\n").map((line, idx) => (
+          <div key={idx}>{line}</div>
+        ))}
+      </div>
+    </div>
+  );
+});
+
+export default TypingTest;
