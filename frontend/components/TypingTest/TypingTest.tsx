@@ -21,11 +21,11 @@ const TypingTest = memo(({ song, letterHeight, textSize }: TypingTestProps) => {
         {song.title} - {song.author}
       </div>
       <div
-        className="w-[30vw] overflow-scroll"
+        className="w-[60vw] overflow-scroll"
         style={{ height: letterHeight * 10 }}
         onClick={() => ref.current && ref.current.focus()}
       >
-        <div className="flex flex-col w-[30vw]">
+        <div className="flex flex-col flex-grow">
           {lines.map((line, line_idx) => (
             <div className={`${textSize} flex flex-wrap`} key={line_idx}>
               {`${line} `.split("").map((letter) => {
