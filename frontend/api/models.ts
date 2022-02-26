@@ -1,5 +1,9 @@
-export interface Song {
+export interface SongSearch {
+  id: string;
   author: string;
   title: string;
-  lyrics?: string;
+}
+
+export interface Song extends SongSearch {
+  lyrics: string;
 }
