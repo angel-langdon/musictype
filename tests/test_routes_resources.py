@@ -2,7 +2,7 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from backend.api.models import new_uuid, SongSearch
+from backend.api.models import new_uuid, SongResponse, SongSearch
 
 _MOUNT = "/api/resources/"
 
@@ -15,7 +15,7 @@ def client(base_client: TestClient):
 
 def _get_songs_response(client: TestClient, query: str):
     return client.get(
-        "songs/search",
+        "songs",
         params={"query": query},
     )
 
@@ -28,7 +28,7 @@ def _get_songs(client: TestClient, query: str = "hola") -> list[SongSearch]:
     return [SongSearch(**song) for song in resp.json()]
 
 
-def test_search_songs(client: TestClient):
+def test_get_songs(client: TestClient):
     assert _get_songs(client)
     assert not _get_songs(client, query="kajdlajlsdjadjalkdjaldjlkdjaldjalsd")
     for query in ["", "a" * 91]:
@@ -36,20 +36,24 @@ def test_search_songs(client: TestClient):
         assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_song_lyrics(client: TestClient):
-    url_lyrics = "song/{song_id}/lyrics"
+def test_get_song(client: TestClient):
+    url_song = "song/"
     # not saved lyrics
-    song = _get_songs(client)[0]
-    resp = client.get(url_lyrics.format(song_id=song.id))
+    song_search = _get_songs(client)[0]
+    resp = client.get(url_song + str(song_search.id))
     assert resp.status_code == status.HTTP_200_OK
-    assert len(resp.content) > 10
+    assert len(set(resp.json()) - set(SongResponse.__fields__)) == 0
+    song = SongResponse(**resp.json())
+    assert len(song.lyrics) > 10
     # saved lyrics
-    resp = client.get(url_lyrics.format(song_id=song.id))
+    resp = client.get(url_song + str(song_search.id))
     assert resp.status_code == status.HTTP_200_OK
-    assert len(resp.content) > 10
+    assert len(set(resp.json()) - set(SongResponse.__fields__)) == 0
+    song = SongResponse(**resp.json())
+    assert len(song.lyrics) > 10
     # not found song
-    resp = client.get(url_lyrics.format(song_id=new_uuid()))
+    resp = client.get(url_song + str(new_uuid()))
     assert resp.status_code == status.HTTP_404_NOT_FOUND
     # invalid uuid
-    resp = client.get(url_lyrics.format(song_id="not_valid_uuid_format"))
+    resp = client.get(url_song + "not_valid_uuid_format")
     assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

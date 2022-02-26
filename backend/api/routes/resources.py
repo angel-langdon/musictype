@@ -2,9 +2,9 @@ import fastapi
 from fastapi import Query
 from sqlmodel import Session
 
-from backend import scraping, song_utils
+from backend import scraping
 from backend.api.dependencies import db_session, song_model
-from backend.api.models import Song, SongSearch
+from backend.api.models import Song, SongResponse, SongSearch
 from backend.sqlmodel_fix import select
 
 router = fastapi.APIRouter(prefix="/resources")
@@ -28,8 +28,8 @@ def _upsert_songs(songs: list[Song], session: Session):
         song.id = present_songs.get(song.g_slug, song.id)
 
 
-@router.get("/songs/search", response_model=list[SongSearch])
-def search_songs(
+@router.get("/songs", response_model=list[SongSearch])
+def get_songs(
     query: str = Query(..., min_length=1, max_length=90),
     session: Session = db_session,
 ):
@@ -40,14 +40,15 @@ def search_songs(
     return songs
 
 
-@router.get("/song/{song_id}/lyrics", response_model=str)
-def song_lyrics(song: Song = song_model, session: Session = db_session):
+@router.get("/song/{song_id}", response_model=SongResponse)
+def get_song(song: Song = song_model, session: Session = db_session):
     """Get song lyrics"""
     if song.lyrics:
-        return song_utils.clean_lyrics(song.lyrics)
+        return song
 
     lyrics = scraping.get_song_lyrics_from_slug(song.g_slug)
     song.lyrics = lyrics
     session.add(song)
     session.commit()
-    return song_utils.clean_lyrics(lyrics)
+    session.refresh(song)
+    return song
