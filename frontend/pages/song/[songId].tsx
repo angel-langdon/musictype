@@ -1,5 +1,5 @@
 import LoadingSpinner from "components/LoadingSpinner";
-import TypingTest from "components/TypingTest";
+import TypingTest from "components/TypingTest/TypingTest";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Song } from "api/models";
@@ -21,6 +21,7 @@ export default function SongTypingTest() {
   const router = useRouter();
   const { songId } = router.query;
   const [letterHeight, setLetterHeight] = useState(-1);
+  const textSize = "text-xl";
 
   useEffect(() => {
     if (typeof songId !== "string") return;
@@ -32,9 +33,13 @@ export default function SongTypingTest() {
       {!song || letterHeight === -1 ? (
         <LoadingSpinner />
       ) : (
-        <TypingTest song={song} letterHeight={letterHeight} />
+        <TypingTest
+          song={song}
+          letterHeight={letterHeight}
+          textSize={textSize}
+        />
       )}
-      <LetterHeight setHeigth={setLetterHeight} />
+      <LetterHeight setHeigth={setLetterHeight} textSize={textSize} />
     </div>
   );
 }
