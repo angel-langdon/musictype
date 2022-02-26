@@ -10,7 +10,7 @@ function useSongState() {
   };
 }
 
-type ISongContext = ReturnType<typeof useSongState>;
+export type ISongContext = ReturnType<typeof useSongState>;
 const SongContext = createContext<ISongContext>(null!);
 
 export default function SongProvider({ children }: { children: ReactNode }) {
