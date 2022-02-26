@@ -40,7 +40,7 @@ def search_songs(
     return songs
 
 
-@router.get("/song/lyrics/{song_id}", response_model=str)
+@router.get("/song/{song_id}/lyrics", response_model=str)
 def song_lyrics(song: Song = song_model, session: Session = db_session):
     """Get song lyrics"""
     if song.lyrics:
