@@ -59,7 +59,7 @@ export default function SongSelect(props: Props) {
           className="primary w-full"
           placeholder="Search a song..."
           value={query}
-          autoFocus={true}
+          ref={(ref) => ref && ref.focus()}
           maxLength={90}
           onChange={(e) => setQuery(e.target.value)}
         ></input>
