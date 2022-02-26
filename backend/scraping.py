@@ -10,9 +10,11 @@ from backend.song_utils import clean_text
 
 re_lyrics_container = re.compile("^Lyrics__Container")
 
+req_config = {"timeout": 20}
+
 
 def get_song_lyrics(url: str) -> str:
-    resp = httpx.get(url)
+    resp = httpx.get(url, **req_config)
     soup = BeautifulSoup(resp.content, "lxml")
 
     for br in soup.find_all("br"):
@@ -31,7 +33,7 @@ def get_song_lyrics_from_slug(slug: str) -> str:
 
 def search_songs(query: str, page: int = 1) -> list[Song]:
     url = "https://genius.com/api/search/song"
-    resp = httpx.get(url, params={"q": query, "page": page})
+    resp = httpx.get(url, params={"q": query, "page": page}, **req_config)
 
     content = unicodedata.normalize("NFKD", resp.content.decode())
     dic = json.loads(content)
