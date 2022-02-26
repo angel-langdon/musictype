@@ -1,30 +1,27 @@
 import { doApiCall } from "api/client";
-import { Song } from "api/models";
+import { SongSearch } from "api/models";
+import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BiSearchAlt2 } from "react-icons/bi";
 import LoadingSpinner from "./LoadingSpinner";
 
-interface Props {
-  setSong: Dispatch<SetStateAction<Song | null>>;
-}
-
 async function loadSongs(
   query: string,
-  setSongs: Dispatch<SetStateAction<Song[]>>,
+  setSongs: Dispatch<SetStateAction<SongSearch[]>>,
   setIsLoading: Dispatch<SetStateAction<boolean>>
 ) {
-  const [res] = await doApiCall("GET", "resources", "songs/search", {
+  const [res] = await doApiCall("GET", "resources", "songs", {
     params: { query },
   });
   if (!res || res.status !== 200) return;
-  const songs: Song[] | any = res.data;
+  const songs: SongSearch[] | any = res.data;
   setSongs(songs);
   setIsLoading(false);
 }
 
 function useDelayedSearch(
   query: string,
-  setSongs: Dispatch<SetStateAction<Song[]>>,
+  setSongs: Dispatch<SetStateAction<SongSearch[]>>,
   delaySeconds = 1
 ) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,9 +39,9 @@ function useDelayedSearch(
   return isLoading;
 }
 
-export default function SongSelect(props: Props) {
+export default function SongSelect() {
   const [query, setQuery] = useState("");
-  const [songs, setSongs] = useState<Song[]>([]);
+  const [songs, setSongs] = useState<SongSearch[]>([]);
 
   let isLoading = useDelayedSearch(query, setSongs);
 
@@ -69,7 +66,7 @@ export default function SongSelect(props: Props) {
   );
 }
 
-function Results(props: { songs: Song[]; isLoading: boolean }) {
+function Results(props: { songs: SongSearch[]; isLoading: boolean }) {
   if (props.isLoading)
     return (
       <div className="flex flex-grow items-center justify-center">
@@ -79,17 +76,16 @@ function Results(props: { songs: Song[]; isLoading: boolean }) {
   return (
     <div className="flex flex-col flex-grow overflow-y-scroll overflow-x-clip">
       {props.songs.map((song) => (
-        <div
-          key={`${song.author}-${song.title}`}
-          className="flex flex-col hover:bg-slate-800 cursor-pointer px-6 py-4 whitespace-nowrap group"
-        >
-          <div className="block font-bold text-slate-400 text-ellipsis overflow-hidden">
-            {song.title}
+        <Link key={`${song.author}-${song.title}`} href={`song/${song.id}`}>
+          <div className="flex flex-col hover:bg-slate-800 cursor-pointer px-6 py-4 whitespace-nowrap group">
+            <div className="block font-bold text-slate-400 text-ellipsis overflow-hidden">
+              {song.title}
+            </div>
+            <div className="block overflow-hidden text-ellipsis">
+              {song.author}
+            </div>
           </div>
-          <div className="block overflow-hidden text-ellipsis">
-            {song.author}
-          </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
