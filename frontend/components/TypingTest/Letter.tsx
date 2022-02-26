@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 
 const correctColor = "text-zinc-300";
 const wrongColor = "text-red-500";
@@ -19,8 +19,19 @@ function getProps(songLt: string, writtenLt: string | undefined) {
 }
 
 const Letter = memo((props: LetterProps) => {
+  const ref = useRef<HTMLDivElement>(null);
   const [text, textColor] = getProps(props.songLetter, props.writtenLetter);
-  return <div className={textColor}>{text}</div>;
+
+  useEffect(() => {
+    if (!ref.current || props.writtenLetter === undefined) return;
+    ref.current.scrollIntoView();
+  }, [props.songLetter, props.writtenLetter]);
+
+  return (
+    <div ref={ref} className={textColor}>
+      {text}
+    </div>
+  );
 });
 
 export default Letter;
