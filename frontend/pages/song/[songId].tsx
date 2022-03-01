@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Song } from "api/models";
 import { doApiCall } from "api/client";
-import LetterHeight from "components/LetterHeight";
+import LetterSize from "components/LetterSize";
 
 async function loadSong(
   songId: string,
@@ -20,7 +20,7 @@ export default function SongTypingTest() {
   const [song, setSong] = useState<Song | null>(null);
   const router = useRouter();
   const { songId } = router.query;
-  const [letterHeight, setLetterHeight] = useState(-1);
+  const [letter, setLetter] = useState({ height: -1, width: -1 });
   const textSize = "text-xl";
 
   useEffect(() => {
@@ -29,17 +29,13 @@ export default function SongTypingTest() {
   }, [songId, setSong]);
 
   return (
-    <div>
-      {!song || letterHeight === -1 ? (
+    <div className="flex flex-col items-center justify-center">
+      {!song || letter.height === -1 || letter.width === -1 ? (
         <LoadingSpinner />
       ) : (
-        <TypingTest
-          song={song}
-          letterHeight={letterHeight}
-          textSize={textSize}
-        />
+        <TypingTest song={song} textSize={textSize} letter={letter} />
       )}
-      <LetterHeight setHeigth={setLetterHeight} textSize={textSize} />
+      <LetterSize setLetter={setLetter} textSize={textSize} />
     </div>
   );
 }
