@@ -2,11 +2,11 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import { Dispatch, SetStateAction } from "react";
 
-interface LetterHeightProps {
+interface LetterSizeProps {
   setLetter: Dispatch<SetStateAction<{ width: number; height: number }>>;
   textSize: string;
 }
-export default function LetterHeight(props: LetterHeightProps) {
+export default function LetterSize(props: LetterSizeProps) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!ref.current) return;
