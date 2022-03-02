@@ -33,7 +33,7 @@ const TypingTest = memo(({ song, letter, textSize }: TypingTestProps) => {
   const { width, height } = useContainerSize(lines, letter);
   let letterIdx = -1;
   return (
-    <div className="flex flex-col gap-y-5" style={{ width }}>
+    <div className="flex flex-col gap-y-5 " style={{ width }}>
       <div>
         {song.title} | {song.author}
       </div>
@@ -45,15 +45,21 @@ const TypingTest = memo(({ song, letter, textSize }: TypingTestProps) => {
         <div className="flex flex-col flex-grow">
           {lines.map((line, line_idx) => (
             <div className={`${textSize} flex flex-wrap`} key={line_idx}>
-              {Array.from(`${line} `).map((letter) => {
-                letterIdx++;
+              {line.split(" ").map((word) => {
                 return (
-                  <Letter
-                    key={letterIdx}
-                    songLetter={letter}
-                    writtenLetter={value[letterIdx]}
-                    isLetterActive={value.length === letterIdx}
-                  />
+                  <div className="flex">
+                    {Array.from(`${word} `).map((letter) => {
+                      letterIdx++;
+                      return (
+                        <Letter
+                          key={letterIdx}
+                          songLetter={letter}
+                          writtenLetter={value[letterIdx]}
+                          isLetterActive={value.length === letterIdx}
+                        />
+                      );
+                    })}
+                  </div>
                 );
               })}
             </div>
