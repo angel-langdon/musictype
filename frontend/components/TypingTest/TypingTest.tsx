@@ -10,37 +10,23 @@ interface TypingTestProps {
   textSize: string;
 }
 
-function useContainerSize(
-  lines: string[],
-  letter: TypingTestProps["letter"]
-): { width: string; height: number } {
-  return useMemo(() => {
-    if (lines.length === 0) return { width: "0px", height: 0 };
-    let sum = 0;
-    lines.forEach((line) => (sum += line.length));
-    const meanLength = sum / lines.length;
-    return {
-      width: `min(${(meanLength + 10) * letter.width}px, 80vw)`,
-      height: letter.height * 10,
-    };
-  }, [lines, letter]);
-}
-
 const TypingTest = memo(({ song, letter, textSize }: TypingTestProps) => {
   const ref = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
   const lines = useMemo(() => song.lyrics.split("\n"), [song.lyrics]);
-  const { width, height } = useContainerSize(lines, letter);
   let letterIdx = -1;
   return (
-    <div className="flex flex-col gap-y-5 " style={{ width }}>
-      <div>
+    <div
+      className="flex flex-col gap-y-5  p-10 pretty-container bg-slate-700"
+      style={{ width: "60vw" }}
+    >
+      <div className="text-slate-400">
         {song.title} | {song.author}
       </div>
       <div
         className="overflow-scroll"
         onClick={() => ref.current && ref.current.focus()}
-        style={{ height }}
+        style={{ height: letter.height * 10 }}
       >
         <div className="flex flex-col flex-grow">
           {lines.map((line, line_idx) => (
