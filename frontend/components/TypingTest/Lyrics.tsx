@@ -1,4 +1,10 @@
-import { CSSProperties, useMemo } from "react";
+import {
+  CSSProperties,
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import Letter from "./Letter";
 import { VariableSizeList as List } from "react-window";
 import { TypingTestProps } from "./TypingTest";
@@ -31,6 +37,16 @@ function getItemSize(
   return lineCount * letter.height;
 }
 
+function useUpdateItemSize(
+  listRef: MutableRefObject<List | null>,
+  width: number
+) {
+  useEffect(() => {
+    if (!listRef.current) return;
+    listRef.current.resetAfterIndex(0);
+  }, [width]);
+}
+
 export default function Lyrics({
   value,
   song,
@@ -39,8 +55,10 @@ export default function Lyrics({
   height,
   width,
 }: LyricsProps) {
+  const listRef = useRef<List>(null);
   const lines = useMemo(() => song.lyrics.split("\n"), [song.lyrics]);
   const cumLength = useCumLength(lines);
+  useUpdateItemSize(listRef, width);
 
   function Line({ index, style }: { index: number; style: CSSProperties }) {
     let letterIdx = cumLength[index];
@@ -69,10 +87,11 @@ export default function Lyrics({
   }
   return (
     <List
+      ref={listRef}
       height={height}
       width={width}
       itemCount={lines.length}
-      itemSize={(idx) => getItemSize(lines[idx].length, letter, width)}
+      itemSize={(idx) => getItemSize(lines[idx].length + 1, letter, width)}
     >
       {Line}
     </List>
