@@ -20,7 +20,6 @@ const TypingTest = memo(({ song, letter, textSize }: TypingTestProps) => {
         {song.title} | {song.author}
       </div>
       <div
-        className="overflow-scroll"
         onClick={() => ref.current && ref.current.focus()}
         style={{ height: letter.height * 10, width: "60vw" }}
       >
