@@ -18,16 +18,18 @@ function getProps(songLt: string, writtenLt: string | undefined) {
 }
 
 const Letter = memo((props: LetterProps) => {
+  const { songLetter, writtenLetter, isLetterActive } = props;
   const ref = useRef<HTMLDivElement>(null);
-  const [text, textColor] = getProps(props.songLetter, props.writtenLetter);
+  const [text, textColor] = getProps(songLetter, writtenLetter);
+  const decoration = isLetterActive ? " underline decoration-[#e2b714]" : "";
 
   useEffect(() => {
-    if (!ref.current || !props.isLetterActive) return;
+    if (!ref.current || !isLetterActive) return;
     ref.current.scrollIntoView();
-  }, [ref, props.isLetterActive]);
+  }, [ref, isLetterActive]);
 
   return (
-    <div ref={ref} className={textColor}>
+    <div ref={ref} className={textColor + decoration}>
       {text}
     </div>
   );
