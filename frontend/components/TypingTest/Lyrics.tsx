@@ -65,12 +65,12 @@ export default function Lyrics({
     const words = lines[index].split(" ").map((word, wordIdx) => {
       return (
         <div className="flex" key={`${index}-${wordIdx}`}>
-          {Array.from(`${word} `).map((letter) => {
+          {Array.from(`${word} `).map((songLetter) => {
             letterIdx++;
             return (
               <Letter
                 key={letterIdx}
-                songLetter={letter}
+                songLetter={songLetter}
                 writtenLetter={value[letterIdx]}
                 isLetterActive={value.length === letterIdx}
               />
