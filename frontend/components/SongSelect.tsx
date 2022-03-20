@@ -59,6 +59,7 @@ export default function SongSelect() {
           ref={(ref) => ref && ref.focus()}
           maxLength={90}
           onChange={(e) => setQuery(e.target.value)}
+          tabIndex={1}
         ></input>
       </div>
       {query === "" ? null : <Results songs={songs} isLoading={isLoading} />}
@@ -75,9 +76,17 @@ function Results(props: { songs: SongSearch[]; isLoading: boolean }) {
     );
   return (
     <div className="flex flex-col flex-grow overflow-y-scroll overflow-x-clip">
-      {props.songs.map((song) => (
+      {props.songs.map((song, idx) => (
         <Link key={`${song.author}-${song.title}`} href={`song/${song.id}`}>
-          <div className="flex flex-col hover:bg-slate-800 cursor-pointer px-6 py-4 whitespace-nowrap group">
+          <div
+            className="flex flex-col hover:bg-slate-800 cursor-pointer px-6 py-4 whitespace-nowrap group"
+            tabIndex={idx + 1}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.currentTarget.click();
+              }
+            }}
+          >
             <div className="block font-bold text-slate-400 text-ellipsis overflow-hidden">
               {song.title}
             </div>
