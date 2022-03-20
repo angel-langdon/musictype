@@ -40,6 +40,7 @@ const TypingTest = memo(({ song, letter, textSize }: TypingTestProps) => {
           style={{ left: -1000 }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          autoFocus={true}
         />
       </div>
     </div>
