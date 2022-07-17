@@ -22,10 +22,7 @@ minversion = 6.0
 testpaths = ["tests/"]
 addopts = "-vv --cov backend --cov-report term --cov-report html"
 log_cli = true
-env = [
-	"APP_ENV=dev",
-	"DB_URI=sqlite:///tests/fixtures/tests_database.db",
-]
+env = ["APP_ENV=dev", "DB_URI=sqlite:///tests/fixtures/tests_database.db"]
 
 [tool.poetry]
 name = "musictype"
@@ -54,7 +51,6 @@ mypy = "^0.931"
 pre-commit = "^2.16.0"
 ipykernel = "^6.7.0"
 pytest-cov = "^3.0.0"
-pytest-freezegun = "^0.4.2"
 pytest-env = "^0.6.2"
 
 [build-system]
