@@ -1,6 +1,6 @@
 import fastapi
 from fastapi import Query
-from sqlmodel import Session
+from sqlmodel import col, Session
 
 from backend import scraping
 from backend.api.dependencies import db_session, song_model
@@ -15,7 +15,7 @@ def _upsert_songs(songs: list[Song], session: Session):
         slug: song_id
         for song_id, slug in session.exec(
             select(Song.id, Song.g_slug).where(
-                Song.g_slug.in_([song.g_slug for song in songs])
+                col(Song.g_slug).in_([song.g_slug for song in songs])
             )
         ).all()
     }
