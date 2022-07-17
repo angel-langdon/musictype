@@ -18,20 +18,22 @@ APP_ENV: str = os.environ["APP_ENV"]
 assert APP_ENV in {"dev", "prod"}
 
 
-def _get_db_engine(**kwargs: Any):
+def _create_db_engine(**kwargs: Any):
     if DB_IS_SQLITE:
-        kwargs["echo"] = bool(int(os.environ.get("ECHO_DB", "1")))
         kwargs["connect_args"] = {"check_same_thread": False}
 
-    return create_engine(DB_URI, **kwargs)
+    return create_engine(DB_URI, **kwargs, echo=False)
+
+
+engine = _create_db_engine()
 
 
 def init_db():
     """Setup DB metadata."""
-    SQLModel.metadata.create_all(_get_db_engine())
+    SQLModel.metadata.create_all(engine)
 
 
 def get_db_session() -> Session:
     """Return a db Session."""
-    with Session(_get_db_engine()) as session:
+    with Session(engine) as session:
         return session
