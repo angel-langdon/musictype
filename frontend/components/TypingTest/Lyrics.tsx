@@ -8,6 +8,7 @@ import {
 import Letter from "./Letter";
 import { VariableSizeList as List } from "react-window";
 import { TypingTestProps } from "./TypingTest";
+import useScrollbarSize from "react-scrollbar-size";
 
 interface LyricsProps extends TypingTestProps {
   value: string;
@@ -28,23 +29,40 @@ function useCumLength(lines: string[]) {
 }
 
 function getItemSize(
-  lineLength: number,
+  line: string,
   letter: TypingTestProps["letter"],
   width: number
 ) {
-  const maxChars = Math.floor(width / letter.width);
-  const lineCount = Math.ceil(lineLength / maxChars);
+  let lineCount = 1;
+  let charsCount = 0;
+  const maxCharsPerLine = Math.trunc(width / letter.width);
+  const words = line.split(" ");
+  words.forEach((word, idx) => {
+    const htmlTextLengh = word.length + 1; // + 1 for space
+    charsCount += htmlTextLengh;
+    const isLastWord = idx + 1 == words.length;
+    if (charsCount > maxCharsPerLine) {
+      lineCount += 1;
+      charsCount = htmlTextLengh;
+    } else if (charsCount == maxCharsPerLine && !isLastWord) {
+      charsCount = 0;
+      lineCount += 1;
+    }
+  });
+
   return lineCount * letter.height;
 }
 
 function useUpdateItemSize(
   listRef: MutableRefObject<List | null>,
-  width: number
+  width: number,
+  scrollbarWidth: number,
+  letter: TypingTestProps["letter"]
 ) {
   useEffect(() => {
     if (!listRef.current) return;
     listRef.current.resetAfterIndex(0);
-  }, [width]);
+  }, [width, scrollbarWidth, letter]);
 }
 
 export default function Lyrics({
@@ -58,7 +76,8 @@ export default function Lyrics({
   const listRef = useRef<List>(null);
   const lines = useMemo(() => song.lyrics.split("\n"), [song.lyrics]);
   const cumLength = useCumLength(lines);
-  useUpdateItemSize(listRef, width);
+  const { width: scrollbarWidth } = useScrollbarSize();
+  useUpdateItemSize(listRef, width, scrollbarWidth, letter);
 
   function Line({ index, style }: { index: number; style: CSSProperties }) {
     let letterIdx = cumLength[index];
@@ -89,9 +108,9 @@ export default function Lyrics({
     <List
       ref={listRef}
       height={height}
-      width={width}
+      width={width + scrollbarWidth}
       itemCount={lines.length}
-      itemSize={(idx) => getItemSize(lines[idx].length + 1, letter, width)}
+      itemSize={(idx) => getItemSize(lines[idx], letter, width)}
     >
       {Line}
     </List>
