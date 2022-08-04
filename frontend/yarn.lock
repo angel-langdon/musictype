@@ -1720,6 +1720,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-icons: ^4.4.0
+    react-scrollbar-size: ^5.0.0
     react-virtualized-auto-sizer: ^1.0.6
     react-window: ^1.8.7
     tailwindcss: ^3.1.6
@@ -3202,6 +3203,15 @@ __metadata:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
+  languageName: node
+  linkType: hard
+
+"react-scrollbar-size@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "react-scrollbar-size@npm:5.0.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.1 || ^18.0.0
+  checksum: 7c44cb16fc507b59429641c09741cbbbc7a42da1f687d8c5590c151706e8aa8cd905973e69b5a7e94b90557190c5adc0f7151ce55073009c8a4cd2f5244d5f53
   languageName: node
   linkType: hard
 
