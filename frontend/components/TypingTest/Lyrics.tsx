@@ -35,7 +35,7 @@ function getItemSize(
 ) {
   let lineCount = 1;
   let charsCount = 0;
-  const maxCharsPerLine = Math.trunc(width / letter.width);
+  const maxCharsPerLine = Math.trunc(width / letter.width) - 1; // -1 temp fix for line overlapping
   const words = line.split(" ");
   words.forEach((word, idx) => {
     const htmlTextLengh = word.length + 1; // + 1 for space
@@ -49,7 +49,6 @@ function getItemSize(
       lineCount += 1;
     }
   });
-
   return lineCount * letter.height;
 }
 
