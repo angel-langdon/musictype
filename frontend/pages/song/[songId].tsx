@@ -33,14 +33,6 @@ export default function SongTypingTest() {
   }, [songId]);
   if (code === 404)
     return <div className="text-white text-xl">Song not found</div>;
-  if (code === 422)
-    return <div className="text-white text-xl">Invalid Song ID {songId}</div>;
-  if (code !== 200)
-    return (
-      <div className="text-white text-xl">
-        Something went wrong, please try again in some minutes
-      </div>
-    );
   return (
     <div className="flex flex-col items-center justify-center">
       {!song || letter.height === -1 || letter.width === -1 ? (
