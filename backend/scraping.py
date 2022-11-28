@@ -11,28 +11,37 @@ from backend.song_utils import clean_text
 re_lyrics_container = re.compile("^Lyrics__Container")
 
 req_config = {"timeout": 20}
+HOST = "https://genius.com"
+API_HOST = f"{HOST}/api/"
 
 
-def get_song_lyrics(url: str) -> str:
-    resp = httpx.get(url, **req_config)
+def get_song_info(slug: str) -> Song | None:
+    def lyrics() -> str:
+        for br in soup.find_all("br"):
+            br.replace_with("\n")
+
+        text_lines: list[str] = []
+        for elem in soup.find_all(class_=re_lyrics_container):
+            text_lines.append(elem.text)
+        return "\n\n".join(text_lines)
+
+    resp = httpx.get(f"{HOST}/{slug}", **req_config)
+    if resp.status_code != 200:
+        return None
     soup = BeautifulSoup(resp.content, "lxml")
 
-    for br in soup.find_all("br"):
-        br.replace_with("\n")
+    html_title = (
+        soup.find("title")
+        .text.replace("\xa0", " ")
+        .replace(" Lyrics | Genius Lyrics", "")
+    )
+    author, title = html_title.split(" – ")
 
-    text_lines: list[str] = []
-    for elem in soup.find_all(class_=re_lyrics_container):
-        text_lines.append(elem.text)
-
-    return "\n\n".join(text_lines)
-
-
-def get_song_lyrics_from_slug(slug: str) -> str:
-    return get_song_lyrics(f"https://genius.com{slug}")
+    return Song(id=slug, author=author, title=title, lyrics=lyrics())
 
 
 def search_songs(query: str, page: int = 1) -> list[Song]:
-    url = "https://genius.com/api/search/song"
+    url = f"{API_HOST}search/song"
     resp = httpx.get(url, params={"q": query, "page": page}, **req_config)
 
     content = unicodedata.normalize("NFKD", resp.content.decode())
@@ -44,10 +53,9 @@ def search_songs(query: str, page: int = 1) -> list[Song]:
         author = clean_text(hit["artist_names"])
         songs.append(
             Song(
+                id=hit["path"],
                 title=title,
                 author=author,
-                g_views=hit.get("stats", dict()).get("pageviews", 0),
-                g_slug=hit["path"],
             )
         )
     return songs

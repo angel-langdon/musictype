@@ -1,49 +1,26 @@
-import uuid
 from typing import Optional
 
-from pydantic import BaseModel, UUID4, validator
+from pydantic import BaseModel, validator
 from sqlmodel import Field, SQLModel
 
 from backend import song_utils
 
 
-def new_uuid() -> uuid.UUID:
-    """UUID factory (hack to avoid open issue)."""
-    # TODO remove UUID factory hack when issue is solved
-    # Note: Work around UUIDs with leading zeros:
-    # https://github.com/tiangolo/sqlmodel/issues/25
-    # by making sure uuid str does not start with a leading 0
-    while (value := uuid.uuid4()).hex[0] == "0":
-        pass  # pragma: no cover
-    return value
-
-
-id_field: UUID4 = Field(
-    default_factory=new_uuid,
-    primary_key=True,
-    nullable=False,
-)
-
-
-class Song(SQLModel, table=True):  # type: ignore
-    id: UUID4 = id_field
-
-    title: str = Field(index=True)
-    author: str = Field(index=True)
+class Song(SQLModel):
+    id: str
+    title: str
+    author: str
     lyrics: Optional[str] = None
-
-    g_slug: str = Field(index=True, sa_column_kwargs={"unique": True})
-    g_views: int = Field(index=True)
 
 
 class SongSearch(BaseModel):
-    id: UUID4
+    id: str
     title: str
     author: str
 
 
 class SongResponse(BaseModel):
-    id: UUID4
+    id: str
     title: str
     author: str
     lyrics: str

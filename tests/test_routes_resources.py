@@ -2,7 +2,7 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from backend.api.models import new_uuid, SongResponse, SongSearch
+from backend.api.models import SongResponse, SongSearch
 
 _MOUNT = "/api/resources/"
 
@@ -52,8 +52,5 @@ def test_get_song(client: TestClient):
     song = SongResponse(**resp.json())
     assert len(song.lyrics) > 10
     # not found song
-    resp = client.get(url_song + str(new_uuid()))
+    resp = client.get(url_song + "not-found-song")
     assert resp.status_code == status.HTTP_404_NOT_FOUND
-    # invalid uuid
-    resp = client.get(url_song + "not_valid_uuid_format")
-    assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

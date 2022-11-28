@@ -1,18 +1,16 @@
-from fastapi import Depends
-from pydantic import UUID4
-from sqlmodel import Session
+from fastapi import Depends, HTTPException
 
-from backend import settings
-from backend.api.exceptions import resource_not_found_error
+from backend import scraping
 from backend.api.models import Song
 
-db_session: Session = Depends(settings.get_db_session)
 
-
-def _get_song_model(song_id: UUID4, session: Session = db_session) -> Song:
-    song = session.get(Song, song_id)
+def _get_song_model(slug: str) -> Song:
+    song = scraping.get_song_info(slug)
     if song is None:
-        raise resource_not_found_error(Song, song_id)
+        raise HTTPException(
+            status_code=404,
+            detail=f"Song with id {slug} not found",
+        )
     return song
 
 
