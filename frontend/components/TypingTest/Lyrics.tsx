@@ -104,6 +104,7 @@ export default function Lyrics({
     );
   }
   return (
+    // @ts-ignore
     <List
       ref={listRef}
       height={height}

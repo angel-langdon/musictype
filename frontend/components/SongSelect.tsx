@@ -47,7 +47,7 @@ export default function SongSelect() {
 
   return (
     <div
-      className="flex flex-col w-[50vw] bg-slate-700 pretty-container relative transition-all overflow-hidden"
+      className="flex flex-col w-[60vw] bg-slate-700 pretty-container relative transition-all overflow-hidden"
       style={songs.length > 0 || isLoading ? { height: "75%" } : { height: 64 }}
     >
       <div className="input text-white p-5">
@@ -77,8 +77,8 @@ function Results(props: { songs: SongSearch[]; isLoading: boolean }) {
   return (
     <div className="flex flex-col flex-grow overflow-y-scroll overflow-x-clip">
       {props.songs.map((song, idx) => (
-        <Link key={`${song.author}-${song.title}`} href={`song/${song.id}`}>
-          <div
+        <Link key={`${song.author}-${song.title}`} href={`song${song.id}`}>
+          <a
             className="flex flex-col hover:bg-slate-800 cursor-pointer px-6 py-4 whitespace-nowrap group"
             tabIndex={idx + 1}
             onKeyDown={(e) => {
@@ -93,7 +93,7 @@ function Results(props: { songs: SongSearch[]; isLoading: boolean }) {
             <div className="block overflow-hidden text-ellipsis">
               {song.author}
             </div>
-          </div>
+          </a>
         </Link>
       ))}
     </div>

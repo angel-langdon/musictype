@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Song } from "api/models";
 import { doApiCall } from "api/client";
 import LetterSize from "components/LetterSize";
+import Head from "next/head";
 
 async function getSong(songId: string) {
   const [res, err] = await doApiCall("GET", "resources", `song/${songId}`);
@@ -38,7 +39,12 @@ export default function SongTypingTest() {
       {!song || letter.height === -1 || letter.width === -1 ? (
         <LoadingSpinner />
       ) : (
-        <TypingTest song={song} textSize={textSize} letter={letter} />
+        <>
+          <Head>
+            <title>Test - {song.title}</title>
+          </Head>
+          <TypingTest song={song} textSize={textSize} letter={letter} />
+        </>
       )}
       <LetterSize setLetter={setLetter} textSize={textSize} />
     </div>
