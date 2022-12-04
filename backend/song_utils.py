@@ -38,6 +38,7 @@ def normalize_strange_symbols(string: str) -> str:
     string = re.sub(re_calligraphic_single_quotation_marks, "'", string)
     return (
         string.replace("—", "-")  # large dashe for single dash
+        .replace("–", "-")  # large dash for single dash
         .replace("е", "e")  # cyrillic e for normal e
         .replace("…", "...")  # elipsis for three dots
     )
