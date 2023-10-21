@@ -86,9 +86,9 @@ def create_app() -> FastAPI:
     if APP_ENV == "prod":  # pragma: no cover
         logging.getLogger("uvicorn.access").addFilter(HealthCheckFilter())
 
-    app = serve_next_app(
-        app, Path(__file__).parent.parent / "frontend" / "out"
-    )
+        app = serve_next_app(
+            app, Path(__file__).parent.parent / "frontend" / "out"
+        )
 
     return app
 
